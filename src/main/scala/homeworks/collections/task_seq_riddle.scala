@@ -1,6 +1,6 @@
 package homeworks.collections
 
-import homeworks.HomeworksUtils.TaskSyntax
+import scala.annotation.tailrec
 
 object task_seq_riddle {
 
@@ -18,8 +18,19 @@ object task_seq_riddle {
    * 1. Реализуйте функцию генерирующую след последовательность из текущей
    * */
 
-  def nextLine(currentLine: List[Int]): List[Int] =
-    task"Реализуйте функцию генерирующую след последовательность из текущей"()
+  def nextLine(currentLine: List[Int]): List[Int] = {
+    @tailrec
+    def innerRec(acc: List[Int], currentLine: List[Int]): List[Int] = currentLine match {
+      case Nil => acc
+      case currLine@(head :: _) =>
+        val currList = currLine.takeWhile(_ == head)
+        val currResList = List(currList.size, head)
+        innerRec(acc ::: currResList, currLine.dropWhile(_ == head))
+    }
+
+    innerRec(Nil, currentLine)
+  }
+
 
   /**
    * 2. Реализуйте ленивый список, который генерирует данную последовательность
@@ -29,6 +40,6 @@ object task_seq_riddle {
    *
    */
 
-  val funSeq: LazyList[List[Int]] =
-    task"Реализуйте ленивый список, который генерирует данную последовательность"()
+  lazy val funSeq: LazyList[List[Int]] = List(1) #:: funSeq.map(nextLine)
+
 }
