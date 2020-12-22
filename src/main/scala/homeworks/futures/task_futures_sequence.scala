@@ -32,4 +32,20 @@ object task_futures_sequence {
         (items, errors)
       }
   }
+
+
+  /**
+   * Вторая версия, упрощенная
+   * @param futures список асинхронных задач
+   * @tparam A любое значение
+   * @return асинхронную задачу с кортежом из двух списков
+   */
+  def fullSequence2[A](futures: List[Future[A]]): Future[(List[A], List[Throwable])] = {
+    futures.foldLeft(Future.successful(List.empty[A], List.empty[Throwable]))(
+      (acc,future) => acc.flatMap({
+        case (values, failures) => future
+          .map { s => (values :+ s, failures) }
+          .recover { failure => (values, failures :+ failure) }
+      })
+    )}
 }
