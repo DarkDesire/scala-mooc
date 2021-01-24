@@ -14,34 +14,19 @@ object task_caesar {
    * @param offset сдвиг вперёд по алфавиту
    * @return зашифрованное слово
    */
-  def encrypt(word: String, offset: Int): String = {
-    val alphabet = 'A' to 'Z' // size=26
-    // reduce offset
-    val shift = (offset + alphabet.size) % alphabet.size
-    // map + upper bounds
-    word.map {
-      case c if alphabet.indexOf(c.toUpper) + shift >= alphabet.size =>
-        alphabet(alphabet.indexOf(c.toUpper) + shift - alphabet.size)
-      case c =>
-        alphabet(alphabet.indexOf(c.toUpper) + shift)
-    }
-  }
-
+  def encrypt(word: String, offset: Int): String = shiftWord(word, offset % alphabetSize)
   /**
    * @param cipher шифр, который необходимо расшифровать
    * @param offset сдвиг вперёд по алфавиту
    * @return расшифрованное слово
    */
-  def decrypt(cipher: String, offset: Int): String = {
-    val alphabet = 'A' to 'Z' // size=26
-    // reduce offset
-    val shift = (offset + alphabet.size) % alphabet.size
-    // map + lower bounds
-    cipher.map {
-      case c if alphabet.indexOf(c.toUpper) - shift < 0 =>
-        alphabet(alphabet.indexOf(c.toUpper) - shift + alphabet.size)
-      case c =>
-        alphabet(alphabet.indexOf(c.toUpper) - shift)
-    }
+  def decrypt(cipher: String, offset: Int): String = shiftWord(cipher, alphabetSize - offset % alphabetSize)
+  def shiftWord(word: String, offset: Int): String = {
+    word
+      .map(_.toInt + offset)
+      .map(ch => if (ch > 'Z') ch - alphabetSize else ch)
+      .map(_.toChar)
+      .mkString
   }
+  val alphabetSize: Int = ('A' to 'Z').size
 }
