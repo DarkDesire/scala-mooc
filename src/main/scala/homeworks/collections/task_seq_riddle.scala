@@ -25,7 +25,7 @@ object task_seq_riddle {
       case currLine@(head :: _) =>
         val currList = currLine.takeWhile(_ == head)
         val currResList = List(currList.size, head)
-        innerRec(acc ::: currResList, currLine.dropWhile(_ == head))
+        innerRec(acc ++ currResList, currLine.dropWhile(_ == head))
     }
 
     innerRec(Nil, currentLine)
